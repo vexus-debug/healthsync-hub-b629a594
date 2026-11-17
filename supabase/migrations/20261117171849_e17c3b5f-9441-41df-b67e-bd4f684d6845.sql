@@ -1,0 +1,20 @@
+CREATE POLICY "Staff read scan images" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'scan-images' AND public.is_staff(auth.uid()));
+CREATE POLICY "Staff upload scan images" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'scan-images' AND public.is_staff(auth.uid()));
+CREATE POLICY "Staff update scan images" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'scan-images' AND public.is_staff(auth.uid()));
+CREATE POLICY "Staff delete scan images" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'scan-images' AND public.is_staff(auth.uid()));
+
+REVOKE EXECUTE ON FUNCTION public.grant_staff_role() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.protect_profile_role() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.protect_form_approval() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.is_staff(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.is_senior_scientist(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.is_lab_admin(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.has_lab_permission(uuid, text) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.is_staff(uuid) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.is_senior_scientist(uuid) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.is_lab_admin(uuid) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.has_lab_permission(uuid, text) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.get_public_result(text) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_public_scan(text) TO anon, authenticated;

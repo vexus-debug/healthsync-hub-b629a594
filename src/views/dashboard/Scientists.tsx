@@ -11,7 +11,7 @@ import { fetchScientists } from "@/lib/supabaseQueries";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { FunctionsHttpError } from "@supabase/supabase-js";
+import { manageScientist } from "@/lib/scientists.functions";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
@@ -31,20 +31,10 @@ type Scientist = {
 };
 
 const callManage = async (payload: Record<string, unknown>) => {
-  const { data, error } = await supabase.functions.invoke("manage-scientist", {
-    body: payload,
-  });
-  if (error) {
-    if (error instanceof FunctionsHttpError) {
-      const response = error.context;
-      const body = await response.json().catch(() => null);
-      const message = body && typeof body === "object" && "error" in body
-        ? String(body.error)
-        : error.message;
-      throw new Error(message);
-    }
-    throw new Error(error.message);
-  }
+  const { data: sess } = await supabase.auth.getSession();
+  const accessToken = sess.session?.access_token;
+  if (!accessToken) throw new Error("Please sign in again");
+  const data = await manageScientist({ data: { ...payload, accessToken } as any });
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
 };
