@@ -1,0 +1,104 @@
+{
+  "source": "github",
+  "repository": "https://github.com/vexus-debug/healthsync-hub-ed1e3fb2.git",
+  "capabilities": [
+    {
+      "capability": "application code",
+      "source": "GitHub repository",
+      "outcome": "Import source files as-is into this project, excluding repository metadata and secrets",
+      "status": "imported",
+      "next_action": "None; user requested no verification"
+    },
+    {
+      "capability": "dependencies",
+      "source": "GitHub package.json and bun.lock",
+      "outcome": "Dependencies installed with the repository lockfile",
+      "status": "installed",
+      "next_action": "None; no tests or checks run"
+    },
+    {
+      "capability": "schema",
+      "source": "Supabase migration SQL",
+      "outcome": "Included with imported source; not applied or moved to Lovable Cloud",
+      "status": "pending",
+      "next_action": "Apply/migrate only if requested"
+    },
+    {
+      "capability": "records",
+      "source": "No export attached",
+      "outcome": "Not imported",
+      "status": "pending",
+      "next_action": "Provide CSV or JSON exports if existing records should also be imported"
+    },
+    {
+      "capability": "auth identities",
+      "source": "Supabase references in source",
+      "outcome": "Not migrated",
+      "status": "pending",
+      "next_action": "Migrate only if requested"
+    },
+    {
+      "capability": "authorization",
+      "source": "Source schema and code",
+      "outcome": "Preserved in imported files; not runtime-verified",
+      "status": "pending",
+      "next_action": "Review only if requested"
+    },
+    {
+      "capability": "uploaded file bytes",
+      "source": "Not established by repository inventory",
+      "outcome": "Unknown; no storage export imported",
+      "status": "pending",
+      "next_action": "Supply storage export if migration is requested"
+    },
+    {
+      "capability": "external providers",
+      "source": "Source code and configuration",
+      "outcome": "References retained in source; no providers connected",
+      "status": "pending",
+      "next_action": "Reconnect providers only if requested"
+    },
+    {
+      "capability": "public endpoints",
+      "source": "Source repository",
+      "outcome": "No endpoint migration performed",
+      "status": "pending",
+      "next_action": "Preserve/recreate endpoints if migration is requested"
+    },
+    {
+      "capability": "callbacks and webhooks",
+      "source": "Source repository",
+      "outcome": "Not verified or migrated",
+      "status": "pending",
+      "next_action": "Preserve/recreate if migration is requested"
+    },
+    {
+      "capability": "schedules",
+      "source": "Source repository",
+      "outcome": "Not verified or migrated",
+      "status": "pending",
+      "next_action": "Preserve/recreate if migration is requested"
+    },
+    {
+      "capability": "secrets",
+      "source": "Repository environment file excluded",
+      "outcome": "No secret values copied",
+      "status": "pending",
+      "next_action": "Configure securely if needed"
+    },
+    {
+      "capability": "cutover",
+      "source": "Not requested",
+      "outcome": "Not performed",
+      "status": "pending",
+      "next_action": "None"
+    },
+    {
+      "capability": "verification",
+      "source": "User requested no checks or tests",
+      "outcome": "Not performed",
+      "status": "pending",
+      "next_action": "User will perform checks and tests"
+    }
+  ]
+}
