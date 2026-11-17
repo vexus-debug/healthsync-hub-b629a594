@@ -11,6 +11,7 @@ import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import { buildWhatsAppLink } from "@/lib/site";
 import { SEO } from "@/components/seo/SEO";
+import { submitOnlineLabOrder } from "@/lib/onlineOrders.functions";
 
 const tests = [
   "Haematology / Full Blood Count",
@@ -42,12 +43,13 @@ const schema = z.object({
 const Book = () => {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [serial, setSerial] = useState<string | null>(null);
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
 
   const toggleTest = (t: string) =>
     setSelectedTests((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const data = {
@@ -80,13 +82,18 @@ const Book = () => {
       data.anonymous && `Anonymous drop-off: Yes`,
       data.notes && `Notes: ${data.notes}`,
     ].filter(Boolean).join("\n");
-    const url = buildWhatsAppLink(lines as string);
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      const res = await submitOnlineLabOrder({ data: parsed.data as any });
+      setSerial(res.serial);
       setDone(true);
+      toast({ title: "Order received", description: `Your reference number is ${res.serial}.` });
+      const url = buildWhatsAppLink(`${lines}\nReference: ${res.serial}`);
       window.open(url, "_blank", "noopener,noreferrer");
-      toast({ title: "Opening WhatsApp", description: "Send the pre-filled message to confirm your booking." });
-    }, 400);
+    } catch (err) {
+      toast({ title: "Could not place order", description: err instanceof Error ? err.message : "Please try again.", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -184,7 +191,7 @@ const Book = () => {
             </div>
 
             <Button type="submit" variant="hero" size="lg" disabled={submitting} className="w-full">
-              {done ? <><CheckCircle2 className="h-4 w-4" /> Sent — open WhatsApp</> : submitting ? "Preparing…" : <><MessageCircle className="h-4 w-4" /> Submit & Confirm via WhatsApp</>}
+              {done ? <><CheckCircle2 className="h-4 w-4" /> Order placed{serial ? ` — Ref ${serial}` : ""}</> : submitting ? "Placing order…" : <><MessageCircle className="h-4 w-4" /> Submit & Confirm via WhatsApp</>}
             </Button>
             <p className="text-xs text-muted-foreground text-center">By submitting you agree to be contacted regarding your booking. Your information stays private.</p>
           </form>
